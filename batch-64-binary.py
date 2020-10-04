@@ -122,7 +122,7 @@ if __name__ == "__main__":
     beta = .9
     batch_size = 128
     batches = (m // batch_size)
-    epochs = 50
+    epochs = 500
 
     # initialization
     params = {"W1": np.random.randn(n_h, n_x) * np.sqrt(1. / n_x),

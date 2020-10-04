@@ -32,15 +32,15 @@ def get_data():
 
     # We want to have a binary classification: digit 0 is classified 1 and
     # all the other digits are classified 0
-
+   
     # For seek of binary classification
     y_new = np.zeros(y_train.shape)
-    y_new[np.where(y_train == 0.0)[0]] = 1
+    y_new[np.where(y_train == 7.0)[0]] = 1
     y_train = y_new
-
+    print(y_train)
     # For seek of binary classification
     y_new = np.zeros(y_test.shape)
-    y_new[np.where(y_test == 0.0)[0]] = 1
+    y_new[np.where(y_test == 7.0)[0]] = 1
     y_test = y_new
 
     y_train = y_train.T
@@ -112,11 +112,11 @@ if __name__ == "__main__":
     n_x = X_train.shape[0]  # 784
     m = X_train.shape[1]
     n_h = 1
-    learning_rate = 0.5
+    learning_rate = 0.1
     beta = .9
     batch_size = 128
     batches = (m // batch_size)
-    epochs = 50
+    epochs = 500
 
     # initialization
     params = {
