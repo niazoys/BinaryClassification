@@ -197,10 +197,10 @@ if __name__ == "__main__":
     m = X_train.shape[1]
     n_h = 64
     digits = 10
-    lr = 4
+    lr = 0.1
     batch_size = 128
     batches = (m // batch_size)
-    epochs = 100
+    epochs = 500
 
     # initialization
     params = intializeWeights()
