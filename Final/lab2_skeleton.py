@@ -256,17 +256,17 @@ def intializeWeights(n_x, n_h):
 if __name__ == "__main__":
 
     # change this to other digits to change 1 vs n
-    class_1 = 0
+    class_1 = 7
     X_train, Y_train, X_val, Y_val, X_test, Y_test = get_data(class_1)
 
     # hyperparameters
     n_x = X_train.shape[0]  # 784
     m = X_train.shape[1]
     n_h = 1
-    learning_rate = 0.003
+    learning_rate = 0.1
     batch_size = 128
     batches = -(-m // batch_size)
-    epochs = 100
+    epochs = 500
 
     # initialization
     params = intializeWeights(n_x, n_h)
