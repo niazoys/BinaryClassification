@@ -235,4 +235,4 @@ def get_data():
 if __name__ == "__main__":
     dataset = get_data()
     model = MLP(784)
-    model.fit(80, dataset, 0.001)
+    model.fit(10, dataset, 0.001)

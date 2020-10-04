@@ -92,6 +92,7 @@ class MLP:
 
         # for each layers intialize the Weights
         for L in range(1, self.total_Layers):
+
             self.params["W" + str(L)] = np.random.randn(self.layers_dim[L], self.layers_dim[L - 1]) / np.sqrt(
                 self.layers_dim[L - 1])
             self.params["b" + str(L)] = np.random.randn(self.layers_dim[L], 1)
@@ -164,9 +165,11 @@ class MLP:
     def train_model(self, X, Y, lr, epochs):
 
         np.random.seed(3)
+
         self.n = X.shape[0]
 
         self.layers_dim.insert(0, X.shape[1])
+
         self.intialize_parameters()
 
         # training
@@ -236,12 +239,10 @@ if __name__ == "__main__":
     print("test_y's shape: " + str(test_y.shape))
     print("train_Y's shape: " + str(train_y.shape))
 
-    layers_dims = [196, 1]
+    layers_dims = [46, 1]
 
     ann = MLP(layers_dims)
-    print(layers_dims)
 
     ann.train_model(train_x.reshape(60000, 784), train_y, lr=0.1, epochs=1000)
-    #ann.predict(train_x.reshape(11272, 784), train_y)
     ann.predict(test_x.reshape(10000, 784), test_y)
     ann.plot_cost()
