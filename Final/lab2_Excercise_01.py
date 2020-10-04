@@ -256,7 +256,7 @@ def intializeWeights(n_x, n_h):
 if __name__ == "__main__":
 
     # change this to other digits to change 1 vs n
-    class_1 = 7
+    class_1 = 0
     X_train, Y_train, X_val, Y_val, X_test, Y_test = get_data(class_1)
 
     # hyperparameters

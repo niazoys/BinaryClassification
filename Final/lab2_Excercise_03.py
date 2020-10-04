@@ -237,7 +237,7 @@ def train_model():
     return params, training_loss, validation_loss
 
 
-def intializeWeights():
+def intializeWeights(n_x,n_h,digits):
     params = {"W1": np.random.randn(n_h, n_x) * np.sqrt(1. / n_x),
               "b1": np.zeros((n_h, 1)) * np.sqrt(1. / n_x),
               "W2": np.random.randn(digits, n_h) * np.sqrt(1. / n_h),
@@ -260,7 +260,7 @@ if __name__ == "__main__":
     epochs = 500
 
     # initialization
-    params = intializeWeights()
+    params = intializeWeights(n_x,n_h,digits)
     # train
     training_loss = []
     validation_loss = []
