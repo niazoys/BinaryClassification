@@ -5,6 +5,14 @@ import matplotlib.pyplot as plt
 
 # one-hot encode labels
 def onHot(train_x, train_y, test_x, test_y):
+    """
+
+    :param train_x:  training features
+    :param train_y:  training labels
+    :param test_x:  test_features
+    :param test_y: test_labels
+    :return: one hot representation of the labels
+    """
     # one-hot encode labels
     digits = 10
     examples = train_y.shape[1]
@@ -20,6 +28,13 @@ def onHot(train_x, train_y, test_x, test_y):
 
 
 def split_training_validation_set(m_v, X_train, Y_train):
+    """
+
+    :param m_v: number of sample
+    :param X_train: training samples
+    :param Y_train: training labels
+    :return: splited data
+    """
     m_v = 10000
     X_val = X_train[:, :m_v]
     Y_Val = Y_train[:, :m_v]
@@ -77,12 +92,22 @@ def get_data():
     return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 
-def sigmoid(z):
-    s = 1. / (1. + np.exp(-z))
-    return s
+def sigmoid(Z):
+    """
+     This function returns the sigmoid value of input variable x
+    :param Z: dot product between weights and inputs
+    :return: sigmoid result
+    """
+    return 1 / (1 + np.exp(-Z))
 
 
 def compute_loss(Y, Y_hat):
+    """
+     Cross entropy loss calculation
+    :param Y: True Labels
+    :param Y_hat: predicted labels
+    :return:loss
+    """
     L_sum = np.sum(np.multiply(Y, np.log(Y_hat)))
     m = Y.shape[1]
     L = -(1. / m) * L_sum
@@ -91,17 +116,24 @@ def compute_loss(Y, Y_hat):
 
 
 def feed_forward(X, params):
-    cache = {}
 
-    cache["Z1"] = np.matmul(params["W1"], X) + params["b1"]
-    cache["A1"] = sigmoid(cache["Z1"])
-    cache["Z2"] = np.matmul(params["W2"], cache["A1"]) + params["b2"]
-    cache["A2"] = np.exp(cache["Z2"]) / np.sum(np.exp(cache["Z2"]), axis=0)
+    store = {}
 
-    return cache
+    store["Z1"] = np.matmul(params["W1"], X) + params["b1"]
+    store["A1"] = sigmoid(store["Z1"])
+    store["Z2"] = np.matmul(params["W2"], store["A1"]) + params["b2"]
+    store["A2"] = np.exp(store["Z2"]) / np.sum(np.exp(store["Z2"]), axis=0)
+
+    return store
 
 
 def change_prediction_to_onehot(predictions):
+
+    """
+    changes predictions to onehot
+    :param predictions: predicted probs
+    :return:  one hot
+    """
     pred = np.argmax(predictions, axis=0)
     rows = np.arange(pred.size)
 
@@ -111,13 +143,23 @@ def change_prediction_to_onehot(predictions):
     return one_hot
 
 
-def back_propagate(X, Y, params, cache, m_batch):
-    dZ2 = cache["A2"] - Y
-    dW2 = (1. / m_batch) * np.matmul(dZ2, cache["A1"].T)
+def back_propagate(X, Y, params, store, m_batch):
+
+    """
+        Finds the back propagation
+       :param X: Input features
+       :param Y: True labels
+       :param params: set of parameters
+       :param store: calculated values for the weighted sum and activations
+       :return: derivatives
+   """
+
+    dZ2 = store["A2"] - Y
+    dW2 = (1. / m_batch) * np.matmul(dZ2, store["A1"].T)
     db2 = (1. / m_batch) * np.sum(dZ2, axis=1, keepdims=True)
 
     dA1 = np.matmul(params["W2"].T, dZ2)
-    dZ1 = dA1 * sigmoid(cache["Z1"]) * (1 - sigmoid(cache["Z1"]))
+    dZ1 = dA1 * sigmoid(store["Z1"]) * (1 - sigmoid(store["Z1"]))
     dW1 = (1. / m_batch) * np.matmul(dZ1, X.T)
     db1 = (1. / m_batch) * np.sum(dZ1, axis=1, keepdims=True)
 
@@ -127,6 +169,12 @@ def back_propagate(X, Y, params, cache, m_batch):
 
 
 def plot_training_curve(epoch, training_loss, validation_loss):
+    """
+    :param epoch:  number of epochs
+    :param training_losses: accumlated training loss
+    :param validation_losses: accumlated valiation loss
+    :return:  graph
+    """
     plt.figure()
     plt.plot(range(epochs), training_loss, label="Training Loss")
     plt.plot(range(epochs), validation_loss, label="Validation Loss")
@@ -139,16 +187,26 @@ def plot_training_curve(epoch, training_loss, validation_loss):
 
 
 def test_model(X_test, Y_test, params):
+    """
+    :param X_test: test_features
+    :param Y_test: test_labels
+    :param params: weights and bias
+    :return: parameters , train_Loss , validation_Loss
+    """
 
-    cache = feed_forward(X_test, params)
-    one_hot_pred = change_prediction_to_onehot(cache['A2'])
+    store = feed_forward(X_test, params)
+    one_hot_pred = change_prediction_to_onehot(store['A2'])
     accuracy = np.mean(one_hot_pred == Y_test)
 
     return accuracy
 
 
 def train_model():
+    """
+       Training the network
 
+       :return: parameters , train_Loss , validation_Loss
+       """
     for i in range(epochs):
 
         for j in range(batches):
@@ -159,20 +217,20 @@ def train_model():
             Y = Y_train[:, begin:end]
             m_batch = end - begin
 
-            cache = feed_forward(X, params)
-            grads = back_propagate(X, Y, params, cache, m_batch)
+            store = feed_forward(X, params)
+            grads = back_propagate(X, Y, params, store, m_batch)
 
             params["W1"] = params["W1"] - lr * grads["dW1"]
             params["b1"] = params["b1"] - lr * grads["db1"]
             params["W2"] = params["W2"] - lr * grads["dW2"]
             params["b2"] = params["b2"] - lr * grads["db2"]
 
-        cache = feed_forward(X_train, params)
-        train_cost = compute_loss(Y_train, cache["A2"])
+        store = feed_forward(X_train, params)
+        train_cost = compute_loss(Y_train, store["A2"])
         training_loss.append(train_cost)
 
-        cache = feed_forward(X_val, params)
-        valid_loss = compute_loss(Y_val, cache["A2"])
+        store = feed_forward(X_val, params)
+        valid_loss = compute_loss(Y_val, store["A2"])
         validation_loss.append(valid_loss)
 
         print("Epoch {}: training loss = {}, test loss = {}".format(i + 1, train_cost, valid_loss))
@@ -188,7 +246,6 @@ def intializeWeights():
 
 
 if __name__ == "__main__":
-    
     # get training , validation and test-data
     X_train, Y_train, X_val, Y_val, X_test, Y_test = get_data()
 
